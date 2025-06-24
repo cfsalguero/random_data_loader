@@ -21,13 +21,13 @@ import (
 
 type cliOptions struct {
 	DBType    string `kong:"name='type',enum='mysql,postgres',default='mysql',required,help='Database type (mysql or postgres)'"`
-	DSN       string `kong:"name='dsn',default='root=root@tcp(localhost=3306)/my_database',required,help='Database connection string'"`
-	Schema    string `kong:"name='schema',default='my_database',required,help='Database schema name'"`
+	DSN       string `kong:"name='dsn',default='root:root@tcp(localhost:3306)/my_database',required,help='Database connection string'"`
+	Database  string `kong:"name='database',default='my_database',required,help='Database schema name'"`
 	Table     string `kong:"name='table',default='test_table',required,help='Table name to parse'"`
 	NumRows   int    `kong:"name='rows',default='10',help='Number of rows to generate'"`
 	Parallel  int    `kong:"name='parallel',default='1',help='Number of parallel processes to use'"`
 	BatchSize int    `kong:"name='batch',default='1000',help='Batch size for inserting data'"`
-	LogLevel  string `kong:"name='log',default='info',enum='debug,info,warn,error',help='Log level (debug, info, warn, error)'"`
+	LogLevel  string `kong:"name='log-level',default='info',enum='debug,info,warn,error',help='Log level (debug, info, warn, error)'"`
 }
 
 func main() {
