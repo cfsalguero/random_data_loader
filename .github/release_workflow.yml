@@ -1,0 +1,122 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Get version from tag
+      id: version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+    - name: Build for Linux amd64
+      run: |
+        GOOS=linux GOARCH=amd64 go build -o bin/myapp-linux-amd64 .
+        chmod +x bin/myapp-linux-amd64
+
+    - name: Build for Linux arm64
+      run: |
+        GOOS=linux GOARCH=arm64 go build -o bin/myapp-linux-arm64 .
+        chmod +x bin/myapp-linux-arm64
+
+    - name: Build for macOS amd64
+      run: |
+        GOOS=darwin GOARCH=amd64 go build -o bin/myapp-darwin-amd64 .
+        chmod +x bin/myapp-darwin-amd64
+
+    - name: Build for macOS arm64 (Apple Silicon)
+      run: |
+        GOOS=darwin GOARCH=arm64 go build -o bin/myapp-darwin-arm64 .
+        chmod +x bin/myapp-darwin-arm64
+
+    - name: Create checksums
+      run: |
+        cd bin
+        sha256sum * > checksums.txt
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.version.outputs.VERSION }}
+        release_name: Release ${{ steps.version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+        body: |
+          Release ${{ steps.version.outputs.VERSION }}
+          
+          ## Binaries
+          - `myapp-linux-amd64`: Linux x86_64
+          - `myapp-linux-arm64`: Linux ARM64
+          - `myapp-darwin-amd64`: macOS Intel
+          - `myapp-darwin-arm64`: macOS Apple Silicon
+          
+          ## Installation
+          Download the appropriate binary for your platform, make it executable, and add it to your PATH.
+
+    - name: Upload Linux amd64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bin/myapp-linux-amd64
+        asset_name: myapp-linux-amd64
+        asset_content_type: application/octet-stream
+
+    - name: Upload Linux arm64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bin/myapp-linux-arm64
+        asset_name: myapp-linux-arm64
+        asset_content_type: application/octet-stream
+
+    - name: Upload macOS amd64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bin/myapp-darwin-amd64
+        asset_name: myapp-darwin-amd64
+        asset_content_type: application/octet-stream
+
+    - name: Upload macOS arm64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bin/myapp-darwin-arm64
+        asset_name: myapp-darwin-arm64
+        asset_content_type: application/octet-stream
+
+    - name: Upload checksums
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bin/checksums.txt
+        asset_name: checksums.txt
+        asset_content_type: text/plain
