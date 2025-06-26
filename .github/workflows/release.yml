@@ -26,23 +26,23 @@ jobs:
 
     - name: Build for Linux amd64
       run: |
-        GOOS=linux GOARCH=amd64 go build -o bin/myapp-linux-amd64 .
-        chmod +x bin/myapp-linux-amd64
+        GOOS=linux GOARCH=amd64 go build -o bin/random-data-loader-linux-amd64 cmd/main.go
+        chmod +x bin/random-data-loader-linux-amd64
 
     - name: Build for Linux arm64
       run: |
-        GOOS=linux GOARCH=arm64 go build -o bin/myapp-linux-arm64 .
-        chmod +x bin/myapp-linux-arm64
+        GOOS=linux GOARCH=arm64 go build -o bin/random-data-loader-linux-arm64 cmd/main.go
+        chmod +x bin/random-data-loader-linux-arm64
 
     - name: Build for macOS amd64
       run: |
-        GOOS=darwin GOARCH=amd64 go build -o bin/myapp-darwin-amd64 .
-        chmod +x bin/myapp-darwin-amd64
+        GOOS=darwin GOARCH=amd64 go build -o bin/random-data-loader-darwin-amd64 cmd/main.go
+        chmod +x bin/random-data-loader-darwin-amd64
 
     - name: Build for macOS arm64 (Apple Silicon)
       run: |
-        GOOS=darwin GOARCH=arm64 go build -o bin/myapp-darwin-arm64 .
-        chmod +x bin/myapp-darwin-arm64
+        GOOS=darwin GOARCH=arm64 go build -o bin/random-data-loader-darwin-arm64 cmd/main.go
+        chmod +x bin/random-data-loader-darwin-arm64
 
     - name: Create checksums
       run: |
@@ -63,10 +63,10 @@ jobs:
           Release ${{ steps.version.outputs.VERSION }}
           
           ## Binaries
-          - `myapp-linux-amd64`: Linux x86_64
-          - `myapp-linux-arm64`: Linux ARM64
-          - `myapp-darwin-amd64`: macOS Intel
-          - `myapp-darwin-arm64`: macOS Apple Silicon
+          - `random-data-loader-linux-amd64`: Linux x86_64
+          - `random-data-loader-linux-arm64`: Linux ARM64
+          - `random-data-loader-darwin-amd64`: macOS Intel
+          - `random-data-loader-darwin-arm64`: macOS Apple Silicon
           
           ## Installation
           Download the appropriate binary for your platform, make it executable, and add it to your PATH.
@@ -77,8 +77,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./bin/myapp-linux-amd64
-        asset_name: myapp-linux-amd64
+        asset_path: ./bin/random-data-loader-linux-amd64
+        asset_name: random-data-loader-linux-amd64
         asset_content_type: application/octet-stream
 
     - name: Upload Linux arm64 binary
@@ -87,8 +87,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./bin/myapp-linux-arm64
-        asset_name: myapp-linux-arm64
+        asset_path: ./bin/random-data-loader-linux-arm64
+        asset_name: random-data-loader-linux-arm64
         asset_content_type: application/octet-stream
 
     - name: Upload macOS amd64 binary
@@ -97,8 +97,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./bin/myapp-darwin-amd64
-        asset_name: myapp-darwin-amd64
+        asset_path: ./bin/random-data-loader-darwin-amd64
+        asset_name: random-data-loader-darwin-amd64
         asset_content_type: application/octet-stream
 
     - name: Upload macOS arm64 binary
@@ -107,8 +107,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./bin/myapp-darwin-arm64
-        asset_name: myapp-darwin-arm64
+        asset_path: ./bin/random-data-loader-darwin-arm64
+        asset_name: random-data-loader-darwin-arm64
         asset_content_type: application/octet-stream
 
     - name: Upload checksums

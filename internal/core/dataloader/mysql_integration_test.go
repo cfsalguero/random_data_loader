@@ -56,7 +56,7 @@ func TestMySQLDataLoader(t *testing.T) {
 	loader.NumGoroutines = 1
 
 	numRows := 100
-	err = loader.LoadData(ctx, numRows)
+	err = loader.LoadData(ctx, numRows, batchSize)
 	require.NoError(t, err)
 
 	count, err := countRows(db)

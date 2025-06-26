@@ -46,9 +46,9 @@ func main() {
 
 	switch cli.DBType {
 	case "mysql":
-		tableStruct, err = mysqlparser.Parse(db, cli.Schema, cli.Table)
+		tableStruct, err = mysqlparser.Parse(db, cli.Database, cli.Table)
 	case "postgres":
-		tableStruct, err = postgresparser.Parse(db, cli.Schema, cli.Table)
+		tableStruct, err = postgresparser.Parse(db, cli.Database, cli.Table)
 	}
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to parse table structure")
